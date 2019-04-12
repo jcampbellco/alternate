@@ -38,7 +38,11 @@ app.post('/', (req, res) => {
 
     console.log('Processed `' + req.query.text + '` into `' + text + '`.');
 
-    res.status(200).send(text);
+    res.status(200).send({
+        text: text,
+        channel: req.body.channel_id,
+        as_user: true
+    });
     // res.send(text);
 });
 
