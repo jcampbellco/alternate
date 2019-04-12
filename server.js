@@ -1,19 +1,24 @@
 'use strict';
 
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const PORT = 80;
 const HOST = '0.0.0.0';
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
+
 app.post('/', (req, res) => {
-    if (!req.query.hasOwnProperty('text')) {
+    if (!req.body.hasOwnProperty('text')) {
+        console.log('Found no field in body called `text`.');
         res.send(500);
     }
 
     // Get the text value out of the query
-    let text = req.query.text;
+    let text = req.body.text;
 
     // Convert the text to lowercase
     text = text.toLowerCase();
@@ -32,7 +37,9 @@ app.post('/', (req, res) => {
     text = text.join('');
 
     console.log('Processed `' + req.query.text + '` into `' + text + '`.');
-    res.send(text);
+
+    res.status(200).send(text);
+    // res.send(text);
 });
 
 app.listen(PORT, HOST);
