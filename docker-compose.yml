@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  alternate:
+    ports:
+      - 80:80
+    build: .

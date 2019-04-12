@@ -1,0 +1,13 @@
+{
+  "name": "alternate-text",
+  "version": "0.0.1",
+  "description": "A simple Slack slash-command to respond with aLtErNaTe CaSeD characters",
+  "author": "me@jcampbell.co",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1"
+  }
+}
