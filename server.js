@@ -2,6 +2,7 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const request = require('request');
 
 const PORT = 80;
 const HOST = '0.0.0.0';
@@ -36,12 +37,11 @@ app.post('/', (req, res) => {
     // Rejoin it
     text = text.join('');
 
-    console.log('Processed `' + req.query.text + '` into `' + text + '`.');
+    console.log('Processed `' + req.body.text + '` into `' + text + '`.');
 
     res.status(200).send({
         text: text,
-        channel: req.body.channel_id,
-        as_user: true
+        response_type: "in_channel"
     });
     // res.send(text);
 });
