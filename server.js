@@ -86,7 +86,7 @@ app.post('/emoji', async (req, res) => {
             replace_original: true,
             attachments: [
                 {
-                    image_ur: emojiList[key],
+                    image_url: emojiList[key],
                 }
             ]
 
