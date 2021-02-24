@@ -56,7 +56,7 @@ app.post('/emoji', async (req, res) => {
 
     const found = req.body.text.match(/^:([A-Za-z]{1,}):$/);
 
-    if (found.length < 2) {
+    if (!found[1]) {
         return res.sendStatus(500);
     }
 
