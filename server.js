@@ -66,9 +66,14 @@ app.post('/emoji', async (req, res) => {
 
     if (results.emoji[key]) {
         return res.status(200).send({
-            text: results.emoji[key],
             response_type: "in_channel",
-            replace_original: true
+            replace_original: true,
+            attachments: [
+                {
+                    image_ur: results.emoji[key],
+                }
+            ]
+
         })
     }
 
