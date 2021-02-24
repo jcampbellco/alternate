@@ -3,11 +3,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const request = require('request');
+const config = require('dotenv').config();
+const { WebClient } = require('@slack/web-api');
 
-const PORT = 80;
+const PORT = 8080;
 const HOST = '0.0.0.0';
 
 const app = express();
+
+const slackClient = new WebClient(process.env.SLACK_OAUTH_TOKEN);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -41,10 +45,37 @@ app.post('/', (req, res) => {
 
     res.status(200).send({
         text: text,
-        response_type: "in_channel"
+        response_type: "in_channel",
+        replace_original: true
     });
     // res.send(text);
 });
+
+app.post('/emoji', async (req, res) => {
+    if (!req.body.hasOwnProperty('text')) {
+        res.sendStatus(500);
+    }
+
+    const found = req.body.text.match(/^:([A-Za-z]{1,}):$/);
+
+    if (found.length < 2) {
+        res.sendStatus(500);
+    }
+
+    const key = found[1];
+
+    const results = await slackClient.emoji.list();
+
+    if (results.emoji[key]) {
+        return res.status(200).send({
+            text: results.emoji[key],
+            response_type: "in_channel",
+            replace_original: true
+        })
+    }
+
+    res.sendStatus(500);
+})
 
 app.listen(PORT, HOST);
 console.log('Listening for text inputs...');
