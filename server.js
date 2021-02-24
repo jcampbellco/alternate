@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const config = require('dotenv').config();
 const { WebClient } = require('@slack/web-api');
 
-const PORT = 8080;
-const HOST = '0.0.0.0';
+const PORT = process.env.NODE_APP_PORT ? process.env.NODE_APP_POR : 8080;
+const HOST = process.env.NODE_APP_HOST ? process.env.NODE_APP_HOST : '0.0.0.0';
 
 const app = express();
 
