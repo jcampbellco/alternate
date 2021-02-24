@@ -2,7 +2,6 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const request = require('request');
 const config = require('dotenv').config();
 const { WebClient } = require('@slack/web-api');
 
@@ -43,23 +42,22 @@ app.post('/', (req, res) => {
 
     console.log('Processed `' + req.body.text + '` into `' + text + '`.');
 
-    res.status(200).send({
+    return res.status(200).send({
         text: text,
         response_type: "in_channel",
         replace_original: true
     });
-    // res.send(text);
 });
 
 app.post('/emoji', async (req, res) => {
     if (!req.body.hasOwnProperty('text')) {
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 
     const found = req.body.text.match(/^:([A-Za-z]{1,}):$/);
 
     if (found.length < 2) {
-        res.sendStatus(500);
+        return res.sendStatus(500);
     }
 
     const key = found[1];
@@ -74,7 +72,7 @@ app.post('/emoji', async (req, res) => {
         })
     }
 
-    res.sendStatus(500);
+    return res.sendStatus(500);
 })
 
 app.listen(PORT, HOST);
