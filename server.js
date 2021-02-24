@@ -15,6 +15,9 @@ const slackClient = new WebClient(process.env.SLACK_OAUTH_TOKEN);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 
+let emojiList = null;
+let emojiListFetched = null;
+
 app.post('/', (req, res) => {
     if (!req.body.hasOwnProperty('text')) {
         console.log('Found no field in body called `text`.');
@@ -62,15 +65,28 @@ app.post('/emoji', async (req, res) => {
 
     const key = found[1];
 
-    const results = await slackClient.emoji.list();
+    let now = new Date();
 
-    if (results.emoji[key]) {
+    let shouldRefetch = false;
+
+    if (emojiList === null && emojiListFetched === null) shouldRefetch = true;
+    if (emojiListFetched < (now.getTime() + process.env.SLACK_EMOJI_LIST_TTL)) shouldRefetch = true;
+    if (emojiList instanceof Object && !emojiList[key]) shouldRefetch = true;
+
+    if (shouldRefetch) {
+        console.log("Emoji list stale, fetching....");
+        emojiListFetched = new Date();
+        const response = await slackClient.emoji.list();
+        emojiList = response.emoji;
+    }
+
+    if (emojiList[key]) {
         return res.status(200).send({
             response_type: "in_channel",
             replace_original: true,
             attachments: [
                 {
-                    image_ur: results.emoji[key],
+                    image_ur: emojiList[key],
                 }
             ]
 
